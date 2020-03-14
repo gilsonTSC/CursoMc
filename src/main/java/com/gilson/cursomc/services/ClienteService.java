@@ -17,10 +17,13 @@ import com.gilson.cursomc.domain.Cidade;
 import com.gilson.cursomc.domain.Cliente;
 import com.gilson.cursomc.domain.Endereco;
 import com.gilson.cursomc.domain.Estado;
+import com.gilson.cursomc.domain.enums.Perfil;
 import com.gilson.cursomc.domain.enums.TipoCliente;
 import com.gilson.cursomc.dto.ClienteDTO;
 import com.gilson.cursomc.dto.ClienteNewDTO;
 import com.gilson.cursomc.repositories.ClienteRepository;
+import com.gilson.cursomc.security.UserSS;
+import com.gilson.cursomc.services.exceptions.AuthorizationException;
 import com.gilson.cursomc.services.exceptions.DateIntegrityException;
 import com.gilson.cursomc.services.exceptions.ObjectNotFoundException;
 
@@ -37,6 +40,10 @@ public class ClienteService {
 	//private EnderecoRepository enderecoRepository;
 	
 	public Cliente find(Integer id) {
+		UserSS user = UserService.authentication();
+		if(user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
+			throw new AuthorizationException("Acesso negado");
+		}
 		Optional<Cliente> obj = repo.findById(id);
 		return obj.orElseThrow(() -> new ObjectNotFoundException(
 				"Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName()));
