@@ -52,8 +52,6 @@ public class Cliente implements Serializable{
 	@OneToMany(mappedBy="cliente")
 	private List<Pedido> pedidos = new ArrayList<>();
 	
-	private String imageUri;
-	
 	public Cliente() {
 		this.addPerfil(Perfil.CLIENTE);
 	}
@@ -172,13 +170,5 @@ public class Cliente implements Serializable{
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
-	}
-
-	public String getImageUri() {
-		return imageUri;
-	}
-
-	public void setImageUri(String imageUri) {
-		this.imageUri = imageUri;
 	}
 }
